@@ -17,7 +17,7 @@ public class AssetManagementApp {
 		
 		while(flag) {
 			
-			System.out.println("=======Asset Management System========");
+			System.out.println("Asset Management System");
 			System.out.println("1. Add Asset");
             System.out.println("2. Update Asset");
             System.out.println("3. Delete Asset");

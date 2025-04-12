@@ -1,10 +1,89 @@
 package com.hexaware.assetmanagementsystem.service;
 
 import com.hexaware.assetmanagementsystem.dao.*;
+import com.hexaware.assetmanagementsystem.entity.Asset;
 
 public class AssetManagementServiceImp implements IAssetManagementService {
 
 	AssetManagementDaoImp dao = new AssetManagementDaoImp();
+	
+	
+	
+	@Override
+	public boolean addAsset(Asset asset) {
+		// TODO Auto-generated method stub
+		try {
+			
+			return dao.addAsset(asset);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateAsset(Asset asset) {
+		// TODO Auto-generated method stub
+		try {
+			
+			return dao.updateAsset(asset);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteAsset(int assetId) {
+		// TODO Auto-generated method stub
+		try {
+			
+			return dao.deleteAsset(assetId);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean allocateAsset(int assetId, int employeeId, String allocationDate) {
+		// TODO Auto-generated method stub
+
+		try {
+			
+			return dao.allocateAsset(assetId,employeeId,allocationDate);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+
+
+	}
+
+	@Override
+	public boolean deallocateAsset(int assetId, int employeeId, String returnDate) {
+		// TODO Auto-generated method stub
+
+		try {
+			
+			return dao.deallocateAsset(assetId, employeeId,returnDate);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
 	
 	@Override
 	public boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost) {

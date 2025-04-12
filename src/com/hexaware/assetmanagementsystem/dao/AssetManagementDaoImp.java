@@ -1,6 +1,7 @@
 package com.hexaware.assetmanagementsystem.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 
 /**
@@ -27,7 +28,12 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             ps.setString(6, asset.getStatus());
             ps.setInt(7, asset.getOwnerId());
 
-            return ps.executeUpdate() > 0;
+
+            int count = ps.executeUpdate();
+            
+            if(count>0)
+            	return true;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +55,12 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             ps.setInt(7, asset.getOwnerId());
             ps.setInt(8, asset.getAssetId());
 
-            return ps.executeUpdate() > 0;
+
+            int count = ps.executeUpdate();
+            
+            if(count>0)
+            	return true;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +75,12 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
 
-            return ps.executeUpdate() > 0;
+
+            int count = ps.executeUpdate();
+            
+            if(count>0)
+            	return true;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,6 +88,8 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
         }
     }
 
+    
+    
     @Override
     public boolean allocateAsset(int assetId, int employeeId, String allocationDate) {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -79,9 +97,14 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
             ps.setInt(2, employeeId);
-            ps.setString(3, allocationDate);
+            ps.setDate(3, Date.valueOf(allocationDate));
 
-            return ps.executeUpdate() > 0;
+
+            int count = ps.executeUpdate();
+            
+            if(count>0)
+            	return true;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,11 +117,15 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
         try (Connection conn = DBUtil.getDBConnection()) {
             String query = "UPDATE asset_allocations SET return_date = ? WHERE asset_id = ? AND employee_id = ? AND return_date IS NULL";
             PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, returnDate);
+            ps.setDate(1, Date.valueOf(returnDate));
             ps.setInt(2, assetId);
             ps.setInt(3, employeeId);
 
-            return ps.executeUpdate() > 0;
+            int count = ps.executeUpdate();
+            
+            if(count>0)
+            	return true;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,6 +133,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
         }
     }
 
+    
 	/**
 	 * @author Rajalakshmi Ganesh
 	 * descp: maintenance record for an asset.
@@ -124,7 +152,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 			String query = "INSERT INTO maintenance_records (asset_id, maintenance_date, description, cost) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
-            ps.setString(2, maintenanceDate);
+            ps.setDate(2, Date.valueOf(maintenanceDate));
             ps.setString(3, description);
             ps.setDouble(4, cost);
             
@@ -162,9 +190,9 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
             ps.setInt(2, employeeId);
-            ps.setString(3, reservationDate);
-            ps.setString(4, startDate);
-            ps.setString(5, endDate);
+            ps.setDate(3, Date.valueOf(reservationDate));
+            ps.setDate(4, Date.valueOf(startDate));
+            ps.setDate(5, Date.valueOf(endDate));
 
             int count = ps.executeUpdate();
             

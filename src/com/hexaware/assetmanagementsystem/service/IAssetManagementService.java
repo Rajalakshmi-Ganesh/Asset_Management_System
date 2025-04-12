@@ -1,5 +1,7 @@
 package com.hexaware.assetmanagementsystem.service;
 
+import com.hexaware.assetmanagementsystem.entity.Asset;
+
 /**
  *@Author: Rajalakshmi Ganesh
  *@Author: Shrinidhii Muthukumaran 
@@ -7,6 +9,46 @@ package com.hexaware.assetmanagementsystem.service;
 */
 
 public interface IAssetManagementService {
+	
+	/**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param asset
+	 * @return boolean
+	 */
+	  boolean addAsset(Asset asset);
+	  
+	  /**
+	   * @Author: Shrinidhii Muthukumaran
+	   * @param asset
+	   * @return boolean
+	   */
+	  boolean updateAsset(Asset asset);
+	  
+	 /**
+	  * @Author:Shrinidhii Muthukumaran
+	  * @param assetId
+	  * @return boolean
+	  */
+	  boolean deleteAsset(int assetId);
+	  
+	  
+	  /**
+	   * @Author:Shrinidhii Muthukumaran
+	   * @param assetId
+	   * @param employeeId
+	   * @param allocationDate
+	   * @return boolean
+	   */
+	  boolean allocateAsset(int assetId, int employeeId, String allocationDate);
+	  
+	/**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param assetId
+	 * @param employeeId
+	 * @param returnDate
+	 * @return boolean
+	 */
+	  boolean deallocateAsset(int assetId, int employeeId, String returnDate);
 	
 	/**
 	 * @author Rajalakshmi Ganesh

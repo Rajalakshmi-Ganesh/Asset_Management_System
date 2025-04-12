@@ -1,8 +1,9 @@
 package com.hexaware.assetmanagementsystem.presentation;
 
 import java.util.*;
-
+import java.sql.Date;
 import com.hexaware.assetmanagementsystem.service.*;
+import com.hexaware.assetmanagementsystem.entity.*;
 
 public class AssetManagementApp {
 	
@@ -16,7 +17,12 @@ public class AssetManagementApp {
 		
 		while(flag) {
 			
-			System.out.println("Asset Management System");
+			System.out.println("=======Asset Management System========");
+			System.out.println("1. Add Asset");
+            System.out.println("2. Update Asset");
+            System.out.println("3. Delete Asset");
+            System.out.println("4. Allocate Asset");
+            System.out.println("5. Deallocate Asset");
 	        System.out.println("6. Perform Maintenance");
 	        System.out.println("7. Reserve Asset");
 	        System.out.println("8. Withdraw Reservation");
@@ -27,7 +33,114 @@ public class AssetManagementApp {
 	        int choice = sc.nextInt();
 	        
 	        switch (choice) {
-	        
+	        case 1:
+	        	
+                System.out.print("Enter Name: ");
+                String name = sc.nextLine();
+                sc.nextLine(); 
+
+                System.out.print("Enter Type: ");
+                String type = sc.nextLine();
+
+                System.out.print("Enter Serial Number: ");
+                String serialNumber = sc.nextLine();
+
+                System.out.print("Enter Purchase Date (yyyy-mm-dd): ");
+                String purchaseDateStr = sc.nextLine();
+                Date purchaseDate = Date.valueOf(purchaseDateStr);
+
+                System.out.print("Enter Location: ");
+                String location = sc.nextLine();
+
+                System.out.print("Enter Status (e.g., Available, Allocated): ");
+                String status = sc.nextLine();
+
+                System.out.print("Enter Owner ID: ");
+                int ownerId = sc.nextInt();
+
+                Asset asset = new Asset(0, name, type, serialNumber, purchaseDate, location, status, ownerId);
+
+                boolean isAdded = service.addAsset(asset);
+                System.out.println(isAdded ? "Asset added successfully!" : "Failed to add asset.");
+                break;
+                
+	        case 2:
+	        	
+                System.out.print("Enter Asset ID to update: ");
+                int updateId = sc.nextInt();
+                sc.nextLine(); // Consume newline
+
+                System.out.print("Enter Name: ");
+                String upName = sc.nextLine();
+
+                System.out.print("Enter Type: ");
+                String upType = sc.nextLine();
+
+                System.out.print("Enter Serial Number: ");
+                String upSerial = sc.nextLine();
+
+                System.out.print("Enter Purchase Date (yyyy-mm-dd): ");
+                String upPurchaseStr = sc.nextLine();
+                Date upPurchase = Date.valueOf(upPurchaseStr);
+
+                System.out.print("Enter Location: ");
+                String upLocation = sc.nextLine();
+
+                System.out.print("Enter Status: ");
+                String upStatus = sc.nextLine();
+
+                System.out.print("Enter Owner ID: ");
+                int upOwnerId = sc.nextInt();
+
+                Asset updatedAsset = new Asset(updateId, upName, upType, upSerial, upPurchase, upLocation, upStatus, upOwnerId);
+
+                boolean isUpdated = service.updateAsset(updatedAsset);
+                System.out.println(isUpdated ? "Asset updated!" : "Failed to update asset.");
+                break;
+                
+                
+	        case 3:
+	        	
+                System.out.print("Enter Asset ID to delete: ");
+                int deleteId = sc.nextInt();
+                boolean isDeleted = service.deleteAsset(deleteId);
+                
+                System.out.println(isDeleted ? "Asset deleted!" : "Asset deletion failed.");
+                break;
+                
+	        case 4:
+                
+                System.out.print("Enter Asset ID: ");
+                int aId = sc.nextInt();
+               
+                System.out.print("Enter Employee ID: ");
+                int eId = sc.nextInt();
+                sc.nextLine();
+                
+                System.out.print("Enter Allocation Date (YYYY-MM-DD): ");
+                String allocDateStr = sc.nextLine();
+                boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
+                
+                System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
+                break;
+
+            case 5:
+            	
+                
+                System.out.print("Enter Asset ID: ");
+                int daId = sc.nextInt();
+                
+                System.out.print("Enter Employee ID: ");
+                int empId1 = sc.nextInt();
+                sc.nextLine();
+                
+                System.out.print("Enter Return Date (YYYY-MM-DD): ");
+                String retDateStr = sc.nextLine();
+                boolean result5 = service.deallocateAsset(daId, empId1, retDateStr);
+                
+                System.out.println(result5 ? "Asset deallocated!" : "Deallocation failed.");
+                break;
+                
             case 6:
             	
                 System.out.print("Enter Asset ID: ");
@@ -53,7 +166,7 @@ public class AssetManagementApp {
                 int assetId2 = sc.nextInt();
 
                 System.out.print("Enter Employee ID: ");
-                int empId = sc.nextInt();
+                int empId2 = sc.nextInt();
                 sc.nextLine(); 
 
                 System.out.print("Enter Reservation Date(YYYY-MM-DD): ");
@@ -65,7 +178,7 @@ public class AssetManagementApp {
                 System.out.print("Enter End Date(YYYY-MM-DD): ");
                 String endDate = sc.nextLine();
 
-                boolean result7 = service.reserveAsset(assetId2, empId, resDate, startDate, endDate);
+                boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
                 System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset");
                 break;
 
@@ -86,7 +199,8 @@ public class AssetManagementApp {
                 break;
 
             default:
-                System.out.println("⚠️ Invalid choice. Please select from the menu.");
+                System.out.println("Invalid choice");
+                break;
 	        }
 	        
 	        

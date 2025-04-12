@@ -11,7 +11,7 @@ public class AssetManagementApp {
     
     static Scanner sc = new Scanner(System.in);
     
-    public static void main(String args[]) throws AssetNotFoundException, AssetNotMaintainException {
+    public static void main(String args[]) {
         
         IAssetManagementService service = new AssetManagementServiceImp(); 
         boolean flag  = true;
@@ -110,19 +110,23 @@ public class AssetManagementApp {
                 
             case 4:
             	
-                System.out.print("Enter Asset ID: ");
-                int aId = sc.nextInt();
+            	try {
+                    System.out.print("Enter Asset ID: ");
+                    int aId = sc.nextInt();
 
-                System.out.print("Enter Employee ID: ");
-                int eId = sc.nextInt();
-                sc.nextLine();
+                    System.out.print("Enter Employee ID: ");
+                    int eId = sc.nextInt();
+                    sc.nextLine();
 
-                System.out.print("Enter Allocation Date (YYYY-MM-DD): ");
-                String allocDateStr = sc.nextLine();
+                    System.out.print("Enter Allocation Date (YYYY-MM-DD): ");
+                    String allocDateStr = sc.nextLine();
 
-                boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
-                System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
-                
+                    boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
+                    System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
+
+                } catch (AssetNotFoundException | AssetNotMaintainException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
                 break;
 
             case 5:
@@ -164,25 +168,29 @@ public class AssetManagementApp {
 
             case 7:
             	
-                System.out.print("Enter Asset ID: ");
-                int assetId2 = sc.nextInt();
+            	try {
+                    System.out.print("Enter Asset ID: ");
+                    int assetId2 = sc.nextInt();
 
-                System.out.print("Enter Employee ID: ");
-                int empId2 = sc.nextInt();
-                sc.nextLine(); 
+                    System.out.print("Enter Employee ID: ");
+                    int empId2 = sc.nextInt();
+                    sc.nextLine(); 
 
-                System.out.print("Enter Reservation Date (YYYY-MM-DD): ");
-                String resDate = sc.nextLine();
+                    System.out.print("Enter Reservation Date (YYYY-MM-DD): ");
+                    String resDate = sc.nextLine();
 
-                System.out.print("Enter Start Date (YYYY-MM-DD): ");
-                String startDate = sc.nextLine();
+                    System.out.print("Enter Start Date (YYYY-MM-DD): ");
+                    String startDate = sc.nextLine();
 
-                System.out.print("Enter End Date (YYYY-MM-DD): ");
-                String endDate = sc.nextLine();
+                    System.out.print("Enter End Date (YYYY-MM-DD): ");
+                    String endDate = sc.nextLine();
 
-                boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
-                System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset.");
-                
+                    boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
+                    System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset.");
+                    
+                } catch (AssetNotFoundException | AssetNotMaintainException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
                 break;
 
             case 8:

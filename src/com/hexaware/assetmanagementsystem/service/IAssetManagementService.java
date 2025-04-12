@@ -1,6 +1,7 @@
 package com.hexaware.assetmanagementsystem.service;
 
 import com.hexaware.assetmanagementsystem.entity.Asset;
+import com.hexaware.assetmanagementsystem.exception.*;
 
 /**
  *@Author: Rajalakshmi Ganesh
@@ -39,7 +40,9 @@ public interface IAssetManagementService {
 	   * @param allocationDate
 	   * @return boolean
 	   */
-	  boolean allocateAsset(int assetId, int employeeId, String allocationDate);
+	  boolean allocateAsset(int assetId, int employeeId, String allocationDate)
+			    throws AssetNotFoundException, AssetNotMaintainException;
+
 	  
 	/**
 	 * @Author: Shrinidhii Muthukumaran
@@ -70,8 +73,9 @@ public interface IAssetManagementService {
 	 * @param endDate
 	 * @return boolean
 	 */
-	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate);
-	 
+	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
+		    throws AssetNotFoundException, AssetNotMaintainException;
+		
 	
 	/**
 	 * @author Rajalakshmi Ganesh

@@ -96,69 +96,50 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     
     
     @Override
-    public boolean allocateAsset(int assetId, int employeeId, String allocationDate) {
+    public boolean allocateAsset(int assetId, int employeeId, String allocationDate)
+        throws AssetNotFoundException, AssetNotMaintainException {
 
         try (Connection conn = DBUtil.getDBConnection()) {
 
-            
+            // asset existence check
             String checkAsset = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
-            
             try (PreparedStatement ps = conn.prepareStatement(checkAsset)) {
-            	
                 ps.setInt(1, assetId);
                 ResultSet rs = ps.executeQuery();
-                
+
                 if (rs.next() && rs.getInt(1) == 0) {
-                	
                     throw new AssetNotFoundException("Asset with ID " + assetId + " not found.");
                 }
-            } catch (AssetNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            }
 
-        
+            // maintenance check
             String checkMaintenance = "SELECT MAX(maintenance_date) FROM maintenance_records WHERE asset_id = ?";
-            
             try (PreparedStatement ps = conn.prepareStatement(checkMaintenance)) {
                 ps.setInt(1, assetId);
                 ResultSet rs = ps.executeQuery();
-                
+
                 if (rs.next()) {
-                	
                     Date lastMaintained = rs.getDate(1);
                     if (lastMaintained == null || lastMaintained.toLocalDate().isBefore(LocalDate.now().minusYears(2))) {
-                    	
                         throw new AssetNotMaintainException("Asset with ID " + assetId + " has not been maintained in the last 2 years.");
                     }
-                } 
-                else {
-                	
+                } else {
                     throw new AssetNotMaintainException("No maintenance record found for asset ID " + assetId + ".");
                 }
-            } catch (AssetNotMaintainException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            }
 
-           
+            // insert allocation
             String query = "INSERT INTO asset_allocations (asset_id, employee_id, allocation_date) VALUES (?, ?, ?)";
-            
             try (PreparedStatement ps = conn.prepareStatement(query)) {
-            	
                 ps.setInt(1, assetId);
                 ps.setInt(2, employeeId);
                 ps.setDate(3, Date.valueOf(allocationDate));
 
                 int count = ps.executeUpdate();
-                
-                if(count>0)
-                	return true;
-                return false;
+                return count > 0;
             }
 
         } catch (SQLException e) {
-        	
             e.printStackTrace();
             return false;
         }
@@ -234,58 +215,44 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 * @return boolean
 	 */
 	@Override
-	public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate){
+	public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
+	        throws AssetNotFoundException, AssetNotMaintainException {
 
 	    try (Connection conn = DBUtil.getDBConnection()) {
 
-	        
+	        // Check if asset exists
 	        String checkAsset = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
-	        
 	        try (PreparedStatement ps = conn.prepareStatement(checkAsset)) {
-	        	
 	            ps.setInt(1, assetId);
 	            ResultSet rs = ps.executeQuery();
-	            
+
 	            if (rs.next() && rs.getInt(1) == 0) {
-	            	
 	                throw new AssetNotFoundException("Asset with ID " + assetId + " not found.");
 	            }
-	        } catch (AssetNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        }
 
-	        
+	        // Check if asset has been maintained in the last 2 years
 	        String checkMaintenance = "SELECT MAX(maintenance_date) FROM maintenance_records WHERE asset_id = ?";
-	        
 	        try (PreparedStatement ps = conn.prepareStatement(checkMaintenance)) {
-	        	
 	            ps.setInt(1, assetId);
 	            ResultSet rs = ps.executeQuery();
-	            
+
 	            if (rs.next()) {
-	            	
 	                Date lastMaintained = rs.getDate(1);
+
+	                // Check if last maintenance is null or older than 2 years from today's date
 	                if (lastMaintained == null || lastMaintained.toLocalDate().isBefore(LocalDate.now().minusYears(2))) {
-	                	
 	                    throw new AssetNotMaintainException("Asset with ID " + assetId + " has not been maintained in the last 2 years.");
-	                    
 	                }
-	            } 
-	            else {
-	            	
+	            } else {
+	                // No maintenance record found
 	                throw new AssetNotMaintainException("No maintenance record found for asset ID " + assetId + ".");
 	            }
-	        } catch (AssetNotMaintainException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        }
 
-	      
+	        // Insert reservation
 	        String query = "INSERT INTO reservations (asset_id, employee_id, reservation_date, start_date, end_date) VALUES (?, ?, ?, ?, ?)";
-	        
 	        try (PreparedStatement ps = conn.prepareStatement(query)) {
-	        	
 	            ps.setInt(1, assetId);
 	            ps.setInt(2, employeeId);
 	            ps.setDate(3, Date.valueOf(reservationDate));
@@ -293,10 +260,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	            ps.setDate(5, Date.valueOf(endDate));
 
 	            int count = ps.executeUpdate();
-	            
-	            if(count>0)
-	            	return true;
-	            return false;
+	            return count > 0;
 	        }
 
 	    } catch (SQLException e) {
@@ -304,7 +268,6 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	        return false;
 	    }
 	}
-
 
 	
 	/**

@@ -2,6 +2,7 @@ package com.hexaware.assetmanagementsystem.service;
 
 import com.hexaware.assetmanagementsystem.dao.*;
 import com.hexaware.assetmanagementsystem.entity.Asset;
+import com.hexaware.assetmanagementsystem.exception.*;
 
 public class AssetManagementServiceImp implements IAssetManagementService {
 
@@ -53,20 +54,17 @@ public class AssetManagementServiceImp implements IAssetManagementService {
 
 	@Override
 	public boolean allocateAsset(int assetId, int employeeId, String allocationDate) {
-		// TODO Auto-generated method stub
-
-		try {
-			
-			return dao.allocateAsset(assetId,employeeId,allocationDate);
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return false;
-		}
-
-
+	    try {
+	    	
+	        return dao.allocateAsset(assetId, employeeId, allocationDate);
+	        
+	    } catch (AssetNotFoundException | AssetNotMaintainException e) {
+	    	
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
+
 
 	@Override
 	public boolean deallocateAsset(int assetId, int employeeId, String returnDate) {
@@ -101,16 +99,15 @@ public class AssetManagementServiceImp implements IAssetManagementService {
 
 	@Override
 	public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate) {
-		// TODO Auto-generated method stub
-		try {
-			
-			return dao.reserveAsset(assetId, employeeId, reservationDate, startDate, endDate);
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return false;
-		}
+	    try {
+	    	
+	        return dao.reserveAsset(assetId, employeeId, reservationDate, startDate, endDate);
+	        
+	    } catch (AssetNotFoundException | AssetNotMaintainException e) {
+	    	
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 
 	@Override

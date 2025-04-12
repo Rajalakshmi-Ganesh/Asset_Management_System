@@ -2,6 +2,7 @@ package com.hexaware.assetmanagementsystem.dao;
 
 
 import com.hexaware.assetmanagementsystem.entity.Asset;
+import com.hexaware.assetmanagementsystem.exception.*;
 
 /**
  *@Author: Rajalakshmi Ganesh
@@ -40,8 +41,8 @@ public interface IAssetManagementDao {
 	   * @param allocationDate
 	   * @return boolean
 	   */
-	  boolean allocateAsset(int assetId, int employeeId, String allocationDate);
-	  
+	  boolean allocateAsset(int assetId, int employeeId, String allocationDate)
+		        throws AssetNotFoundException, AssetNotMaintainException;
 	/**
 	 * @Author: Shrinidhii Muthukumaran
 	 * @param assetId
@@ -71,9 +72,8 @@ public interface IAssetManagementDao {
 	 * @param endDate
 	 * @return boolean
 	 */
-	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate);
-	 
-	
+	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
+	        throws AssetNotFoundException, AssetNotMaintainException;
 	/**
 	 * @author Rajalakshmi Ganesh
 	 * @param reservationId

@@ -63,7 +63,7 @@ public interface IAssetManagementDao {
 	 * @param maintenanceDate
 	 * @param description
 	 * @param cost
-	 * @return
+	 * @return boolean
 	 */
 	boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost);
 	
@@ -75,7 +75,7 @@ public interface IAssetManagementDao {
 	 * @param reservationDate
 	 * @param startDate
 	 * @param endDate
-	 * @return
+	 * @return boolean
 	 */
 	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate);
 	 
@@ -83,7 +83,7 @@ public interface IAssetManagementDao {
 	/**
 	 * @author Rajalakshmi Ganesh
 	 * @param reservationId
-	 * @return
+	 * @return boolean
 	 */
 	boolean withdrawReservation(int reservationId);
 

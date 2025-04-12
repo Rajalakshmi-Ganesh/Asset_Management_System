@@ -1,6 +1,6 @@
 package com.hexaware.assetmanagementsystem.service;
 
-
+import com.hexaware.assetmanagementsystem.dao.*;
 public class AssetManagementServiceImp implements IAssetManagementService {
 
 	@Override

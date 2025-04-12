@@ -9,20 +9,44 @@ public class AssetManagementServiceImp implements IAssetManagementService {
 	@Override
 	public boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost) {
 		// TODO Auto-generated method stub
-		return dao.performMaintenance(assetId, maintenanceDate, description, cost);
-		
+		try {
+			
+			return dao.performMaintenance(assetId, maintenanceDate, description, cost);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate) {
 		// TODO Auto-generated method stub
-		return dao.reserveAsset(assetId, employeeId, reservationDate, startDate, endDate);
+		try {
+			
+			return dao.reserveAsset(assetId, employeeId, reservationDate, startDate, endDate);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public boolean withdrawReservation(int reservationId) {
 		// TODO Auto-generated method stub
-		return dao.withdrawReservation(reservationId);
+		
+		try {
+			
+			return dao.withdrawReservation(reservationId);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

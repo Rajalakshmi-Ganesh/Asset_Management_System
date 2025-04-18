@@ -14,8 +14,19 @@ import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.InvalidStatusException;
 import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
+/**
+ *@Author: Rajalakshmi Ganesh
+ *@Author: Shrinidhii Muthukumaran 
+ * Date: 12-04-2025
+*/
+
 public class AssetManagementDaoImp implements IAssetManagementDao {
 
+	/**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param asset
+	 * @return boolean
+	 */
     @Override
     public boolean addAsset(Asset asset) throws EmployeeNotFoundException, InvalidStatusException {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -55,6 +66,11 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
         }
     }
 
+  /**
+   * @Author: Shrinidhii Muthukumaran
+   * @param asset
+   * @return boolean
+   */
     @Override
     public boolean updateAsset(Asset asset) throws AssetNotFoundException, EmployeeNotFoundException {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -100,6 +116,11 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
         }
     }
 
+	 /**
+	  * @Author:Shrinidhii Muthukumaran
+	  * @param assetId
+	  * @return boolean
+	  */
     @Override
     public boolean deleteAsset(int assetId) throws AssetNotFoundException {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -127,6 +148,13 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
         }
     }
 
+	  /**
+	   * @Author:Shrinidhii Muthukumaran
+	   * @param assetId
+	   * @param employeeId
+	   * @param allocationDate
+	   * @return boolean
+	   */
     @Override
     public boolean allocateAsset(int assetId, int employeeId, String allocationDate)
             throws AssetNotFoundException, AssetNotMaintainException, EmployeeNotFoundException {
@@ -190,6 +218,13 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
         }
     }
 
+	/**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param assetId
+	 * @param employeeId
+	 * @param returnDate
+	 * @return boolean
+	 */
     @Override
     public boolean deallocateAsset(int assetId, int employeeId, String returnDate) throws AssetNotFoundException {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -219,6 +254,14 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
         }
     }
 
+	/**
+	 * @author Rajalakshmi Ganesh
+	 * @param assetId
+	 * @param maintenanceDate
+	 * @param description
+	 * @param cost
+	 * @return boolean
+	 */
     @Override
     public boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost)
             throws AssetNotFoundException {
@@ -248,7 +291,17 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
             return false;
         }
     }
-
+    
+	
+	/**
+	 * @author Rajalakshmi Ganesh
+	 * @param assetId
+	 * @param employeeId
+	 * @param reservationDate
+	 * @param startDate
+	 * @param endDate
+	 * @return boolean
+	 */
     @Override
     public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
             throws AssetNotFoundException, AssetNotMaintainException, EmployeeNotFoundException {
@@ -302,7 +355,13 @@ public class AssetManagementDaoImp implements IAssetManagementDao {
             return false;
         }
     }
+    
 
+	/**
+	 * @author Rajalakshmi Ganesh
+	 * @param reservationId
+	 * @return boolean
+	 */
 	@Override
 	public boolean withdrawReservation(int reservationId) throws ReservationNotFoundException {
 		// TODO Auto-generated method stub

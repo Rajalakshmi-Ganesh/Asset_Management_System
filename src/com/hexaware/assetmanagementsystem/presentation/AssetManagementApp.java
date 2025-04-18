@@ -11,6 +11,12 @@ import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.InvalidStatusException;
 import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
+/**
+ *@Author: Rajalakshmi Ganesh
+ *@Author: Shrinidhii Muthukumaran 
+ * Date: 12-04-2025
+*/
+
 public class AssetManagementApp {
     
     static Scanner sc = new Scanner(System.in);
@@ -20,7 +26,12 @@ public class AssetManagementApp {
         IAssetManagementService service = new AssetManagementServiceImp(); 
         boolean flag  = true;
         
+        
+        try {
+        	
+        
         while(flag) {
+        	
             System.out.println("\n--- Asset Management System ---");
             System.out.println("1. Add Asset");
             System.out.println("2. Update Asset");
@@ -40,7 +51,6 @@ public class AssetManagementApp {
             
             case 1:
             	
-            	try {
             		
                 System.out.print("Enter Name: ");
                 String name = sc.nextLine();
@@ -68,15 +78,11 @@ public class AssetManagementApp {
                 boolean isAdded = service.addAsset(asset);
                 System.out.println(isAdded ? "Asset added successfully!" : "Failed to add asset.");
                 
-            	}catch (EmployeeNotFoundException | InvalidStatusException e) {
-					// TODO: handle exception
-            		System.out.println("Error: " + e.getMessage());
-				}
             
                 break;
                 
             case 2:
-            	try {
+            	
                 System.out.print("Enter Asset ID to update: ");
                 int updateId = sc.nextInt();
                 sc.nextLine();
@@ -106,48 +112,39 @@ public class AssetManagementApp {
                 Asset updatedAsset = new Asset(updateId, upName, upType, upSerial, upPurchase, upLocation, upStatus, upOwnerId);
                 boolean isUpdated = service.updateAsset(updatedAsset);
                 System.out.println(isUpdated ? "Asset updated!" : "Failed to update asset.");
-            	}
-            	catch(AssetNotFoundException | EmployeeNotFoundException e) {
-            		System.out.println("Error: " + e.getMessage());
-            	}
+            	
                 break;
                 
             case 3:
-            	try {
+            	
                 System.out.print("Enter Asset ID to delete: ");
                 int deleteId = sc.nextInt();
                 
                 boolean isDeleted = service.deleteAsset(deleteId);
                 System.out.println(isDeleted ? "Asset deleted!" : "Asset deletion failed.");
-            	}
-            	catch(AssetNotFoundException e) {
-            		System.out.println("Error: " + e.getMessage());
-            	}
+            	
                 break;
                 
             case 4:
             	
-            	try {
-                    System.out.print("Enter Asset ID: ");
-                    int aId = sc.nextInt();
+                System.out.print("Enter Asset ID: ");
+                int aId = sc.nextInt();
 
-                    System.out.print("Enter Employee ID: ");
-                    int eId = sc.nextInt();
-                    sc.nextLine();
+                System.out.print("Enter Employee ID: ");
+                int eId = sc.nextInt();
+                sc.nextLine();
 
-                    System.out.print("Enter Allocation Date (YYYY-MM-DD): ");
-                    String allocDateStr = sc.nextLine();
+                System.out.print("Enter Allocation Date (YYYY-MM-DD): ");
+                String allocDateStr = sc.nextLine();
 
-                    boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
-                    System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
+                boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
+                System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
 
-                } catch (AssetNotFoundException | AssetNotMaintainException | EmployeeNotFoundException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
+                
                 break;
 
             case 5:
-            	try {
+            	
                 System.out.print("Enter Asset ID: ");
                 int daId = sc.nextInt();
 
@@ -160,14 +157,11 @@ public class AssetManagementApp {
 
                 boolean result5 = service.deallocateAsset(daId, empId1, retDateStr);
                 System.out.println(result5 ? "Asset deallocated!" : "Deallocation failed.");
-            	}
-            	catch(AssetNotFoundException e) {
-            		System.out.println("Error: " + e.getMessage());
-            	}
+            	
                 break;
                 
             case 6:
-            	try {
+            	
                 System.out.print("Enter Asset ID: ");
                 int assetId1 = sc.nextInt();
                 sc.nextLine(); 
@@ -183,53 +177,42 @@ public class AssetManagementApp {
 
                 boolean result6 = service.performMaintenance(assetId1, date, desc, cost);
                 System.out.println(result6 ? "Maintenance recorded." : "Failed to record maintenance.");
-            	}
-            	catch(AssetNotFoundException e) {
-            		System.out.println("Error: " + e.getMessage());
-            	}
+            	
                 break;
 
             case 7:
             	
-            	try {
-                    System.out.print("Enter Asset ID: ");
-                    int assetId2 = sc.nextInt();
+                System.out.print("Enter Asset ID: ");
+                int assetId2 = sc.nextInt();
 
-                    System.out.print("Enter Employee ID: ");
-                    int empId2 = sc.nextInt();
-                    sc.nextLine(); 
+                System.out.print("Enter Employee ID: ");
+                int empId2 = sc.nextInt();
+                sc.nextLine(); 
 
-                    System.out.print("Enter Reservation Date (YYYY-MM-DD): ");
-                    String resDate = sc.nextLine();
+                System.out.print("Enter Reservation Date (YYYY-MM-DD): ");
+                String resDate = sc.nextLine();
 
-                    System.out.print("Enter Start Date (YYYY-MM-DD): ");
-                    String startDate = sc.nextLine();
+                System.out.print("Enter Start Date (YYYY-MM-DD): ");
+                String startDate = sc.nextLine();
 
-                    System.out.print("Enter End Date (YYYY-MM-DD): ");
-                    String endDate = sc.nextLine();
+                System.out.print("Enter End Date (YYYY-MM-DD): ");
+                String endDate = sc.nextLine();
 
-                    boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
-                    System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset.");
-                    
-                } catch (AssetNotFoundException | AssetNotMaintainException | EmployeeNotFoundException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
+                boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
+                System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset.");
+                
+                
                 break;
 
             case 8:
             	
-            	try {
                 System.out.print("Enter Reservation ID to withdraw: ");
                 int resId = sc.nextInt();
                 
                 boolean result8 = service.withdrawReservation(resId);
                 
-					System.out.println(result8 ? "Reservation withdrawn." : "Reservation withdrawal failed.");
-					
-				} catch (ReservationNotFoundException e) {
-					// TODO Auto-generated catch block
-					System.out.println("Error: " + e.getMessage());
-				}
+				System.out.println(result8 ? "Reservation withdrawn." : "Reservation withdrawal failed.");
+				
                 
                 break;
 
@@ -246,5 +229,9 @@ public class AssetManagementApp {
                 break;
             }
         }
+        }catch (AssetNotFoundException | AssetNotMaintainException | EmployeeNotFoundException |InvalidStatusException | ReservationNotFoundException e) {
+			// TODO: handle exception
+        	System.out.println("Error:"+ e.getMessage());
+		}
     }
 }

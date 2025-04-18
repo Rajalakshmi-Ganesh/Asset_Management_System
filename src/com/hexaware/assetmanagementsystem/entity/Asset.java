@@ -17,7 +17,7 @@ public class Asset {
     private String serialNumber;
     private Date purchaseDate;
     private String location;
-    private String status; // ENUM mapped as String
+    private String status; 
     private int ownerId;
     
     

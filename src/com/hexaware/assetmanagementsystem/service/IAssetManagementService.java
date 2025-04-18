@@ -16,21 +16,21 @@ public interface IAssetManagementService {
 	 * @param asset
 	 * @return boolean
 	 */
-	  boolean addAsset(Asset asset);
+	  boolean addAsset(Asset asset) throws EmployeeNotFoundException,InvalidStatusException;
 	  
 	  /**
 	   * @Author: Shrinidhii Muthukumaran
 	   * @param asset
 	   * @return boolean
 	   */
-	  boolean updateAsset(Asset asset);
+	  boolean updateAsset(Asset asset) throws AssetNotFoundException,EmployeeNotFoundException ;
 	  
 	 /**
 	  * @Author:Shrinidhii Muthukumaran
 	  * @param assetId
 	  * @return boolean
 	  */
-	  boolean deleteAsset(int assetId);
+	  boolean deleteAsset(int assetId) throws AssetNotFoundException;
 	  
 	  
 	  /**
@@ -41,9 +41,7 @@ public interface IAssetManagementService {
 	   * @return boolean
 	   */
 	  boolean allocateAsset(int assetId, int employeeId, String allocationDate)
-			    throws AssetNotFoundException, AssetNotMaintainException;
-
-	  
+		        throws AssetNotFoundException, AssetNotMaintainException,EmployeeNotFoundException;
 	/**
 	 * @Author: Shrinidhii Muthukumaran
 	 * @param assetId
@@ -51,7 +49,7 @@ public interface IAssetManagementService {
 	 * @param returnDate
 	 * @return boolean
 	 */
-	  boolean deallocateAsset(int assetId, int employeeId, String returnDate);
+	  boolean deallocateAsset(int assetId, int employeeId, String returnDate) throws AssetNotFoundException;
 	
 	/**
 	 * @author Rajalakshmi Ganesh
@@ -61,7 +59,7 @@ public interface IAssetManagementService {
 	 * @param cost
 	 * @return boolean
 	 */
-	boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost);
+	boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost) throws AssetNotFoundException;
 	
 	
 	/**
@@ -74,14 +72,11 @@ public interface IAssetManagementService {
 	 * @return boolean
 	 */
 	boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
-		    throws AssetNotFoundException, AssetNotMaintainException;
-		
-	
+	        throws AssetNotFoundException, AssetNotMaintainException,EmployeeNotFoundException;
 	/**
 	 * @author Rajalakshmi Ganesh
 	 * @param reservationId
 	 * @return boolean
 	 */
-	boolean withdrawReservation(int reservationId);
-
+	boolean withdrawReservation(int reservationId)throws ReservationNotFoundException;
 }

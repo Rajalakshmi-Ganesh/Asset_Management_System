@@ -6,6 +6,7 @@ import com.hexaware.assetmanagementsystem.service.*;
 import com.hexaware.assetmanagementsystem.entity.*;
 import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.AssetNotMaintainException;
+import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
 public class AssetManagementApp {
     
@@ -52,7 +53,7 @@ public class AssetManagementApp {
                 System.out.print("Enter Location: ");
                 String location = sc.nextLine();
 
-                System.out.print("Enter Status (e.g., Available, Allocated): ");
+                System.out.print("Enter Status (in use/decomissioned/under maintenance): ");
                 String status = sc.nextLine();
 
                 System.out.print("Enter Owner ID: ");
@@ -195,10 +196,18 @@ public class AssetManagementApp {
 
             case 8:
             	
+            	try {
                 System.out.print("Enter Reservation ID to withdraw: ");
                 int resId = sc.nextInt();
+                
                 boolean result8 = service.withdrawReservation(resId);
-                System.out.println(result8 ? "Reservation withdrawn." : "Reservation withdrawal failed.");
+                
+					System.out.println(result8 ? "Reservation withdrawn." : "Reservation withdrawal failed.");
+					
+				} catch (ReservationNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 
                 break;
 

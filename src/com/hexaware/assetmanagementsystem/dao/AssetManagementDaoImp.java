@@ -17,6 +17,9 @@ import java.time.LocalDate;
 import com.hexaware.assetmanagementsystem.entity.Asset;
 import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.AssetNotMaintainException;
+import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
+import com.hexaware.assetmanagementsystem.exception.InvalidStatusException;
+import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
 /**
  *@Author: Rajalakshmi Ganesh
@@ -31,7 +34,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 * @return boolean
 	 */
 	@Override
-    public boolean addAsset(Asset asset) {
+    public boolean addAsset(Asset asset) throws EmployeeNotFoundException,InvalidStatusException {
         try (Connection conn = DBUtil.getDBConnection()) {
             String query = "INSERT INTO assets (name, type, serial_number, purchase_date, location, status, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -62,7 +65,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	   * @return boolean
 	   */
     @Override
-    public boolean updateAsset(Asset asset) {
+    public boolean updateAsset(Asset asset) throws AssetNotFoundException,EmployeeNotFoundException{
         try (Connection conn = DBUtil.getDBConnection()) {
             String query = "UPDATE assets SET name = ?, type = ?, serial_number = ?, purchase_date = ?, location = ?, status = ?, owner_id = ? WHERE asset_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -95,7 +98,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	  * @return boolean
 	  */
     @Override
-    public boolean deleteAsset(int assetId) {
+    public boolean deleteAsset(int assetId) throws AssetNotFoundException  {
         try (Connection conn = DBUtil.getDBConnection()) {
             String query = "DELETE FROM assets WHERE asset_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -124,7 +127,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	   */
     @Override
     public boolean allocateAsset(int assetId, int employeeId, String allocationDate)
-        throws AssetNotFoundException, AssetNotMaintainException {
+        throws AssetNotFoundException, AssetNotMaintainException,EmployeeNotFoundException{
 
         try (Connection conn = DBUtil.getDBConnection()) {
 
@@ -193,7 +196,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 * @return boolean
 	 */
     @Override
-    public boolean deallocateAsset(int assetId, int employeeId, String returnDate) {
+    public boolean deallocateAsset(int assetId, int employeeId, String returnDate) throws AssetNotFoundException {
         try (Connection conn = DBUtil.getDBConnection()) {
             String query = "UPDATE asset_allocations SET return_date = ? WHERE asset_id = ? AND employee_id = ? AND return_date IS NULL";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -224,7 +227,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 * @return boolean
 	 */
 	@Override
-	public boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost) {
+	public boolean performMaintenance(int assetId, String maintenanceDate, String description, double cost) throws AssetNotFoundException{
 		// TODO Auto-generated method stub
 		
 		try (Connection conn = DBUtil.getDBConnection()){
@@ -262,7 +265,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 */
 	@Override
 	public boolean reserveAsset(int assetId, int employeeId, String reservationDate, String startDate, String endDate)
-	        throws AssetNotFoundException, AssetNotMaintainException {
+	        throws AssetNotFoundException, AssetNotMaintainException,EmployeeNotFoundException {
 
 	    try (Connection conn = DBUtil.getDBConnection()) {
 
@@ -323,13 +326,30 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	 * @return boolean
 	 */
 	@Override
-	public boolean withdrawReservation(int reservationId) {
+	public boolean withdrawReservation(int reservationId) throws ReservationNotFoundException{
 		// TODO Auto-generated method stub
 		
 		try(Connection conn = DBUtil.getDBConnection()) {
 			
+			String checkQuery = "SELECT COUNT(*) FROM reservations WHERE reservation_id = ?";
+			
+	        PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+	        
+	        checkStmt.setInt(1, reservationId);
+	        
+	        ResultSet rs = checkStmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            int count = rs.getInt(1);
+	            if (count == 0) {
+	                throw new ReservationNotFoundException("Reservation with ID " + reservationId + " not found.");
+	            }
+	        }
+			
 			String query = "DELETE FROM reservations WHERE reservation_id = ?";
+			
             PreparedStatement ps = conn.prepareStatement(query);
+            
             ps.setInt(1, reservationId);
 
             int count = ps.executeUpdate();

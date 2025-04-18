@@ -30,7 +30,7 @@ public class AssetManagementApp {
             System.out.print("Enter your choice: ");
             
             int choice = sc.nextInt();
-            sc.nextLine(); // Clear buffer
+            sc.nextLine(); 
             
             switch (choice) {
             

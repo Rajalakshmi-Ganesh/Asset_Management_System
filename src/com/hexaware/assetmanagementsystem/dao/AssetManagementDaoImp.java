@@ -155,6 +155,17 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
                 }
             }
 
+            String checkIfAllocated = "SELECT COUNT(*) FROM asset_allocations WHERE asset_id = ? AND return_date IS NULL";
+            try (PreparedStatement ps = conn.prepareStatement(checkIfAllocated)) {
+                ps.setInt(1, assetId);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.out.println("Asset with ID " + assetId + " is already allocated and not yet returned.");
+                    return false;
+                }
+            }
+            
             // insert allocation
             String query = "INSERT INTO asset_allocations (asset_id, employee_id, allocation_date) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(query)) {

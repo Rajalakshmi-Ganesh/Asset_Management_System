@@ -36,8 +36,28 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	@Override
     public boolean addAsset(Asset asset) throws EmployeeNotFoundException,InvalidStatusException {
         try (Connection conn = DBUtil.getDBConnection()) {
+        	
+        	 String checkEmployeeQuery = "SELECT COUNT(*) FROM employees WHERE employee_id = ?";
+        	 
+        	 try (PreparedStatement empStmt = conn.prepareStatement(checkEmployeeQuery)){
+	             
+	             empStmt.setInt(1, asset.getOwnerId());
+	             ResultSet empRs = empStmt.executeQuery();
+	
+	             if (empRs.next() && empRs.getInt(1) == 0) {
+	                 throw new EmployeeNotFoundException("Employee with ID " + asset.getOwnerId() + " does not exist.");
+	             }
+        	 }
+
+             
+             String status = asset.getStatus().toLowerCase();
+             if (!(status.equals("in use") || status.equals("decommissioned") || status.equals("under maintenance"))) {
+            	    throw new InvalidStatusException("Status must be one of: in use, decommissioned, under maintenance.");
+            	}
+        	
             String query = "INSERT INTO assets (name, type, serial_number, purchase_date, location, status, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(query);
+            try (PreparedStatement ps = conn.prepareStatement(query)){
+            
             ps.setString(1, asset.getName());
             ps.setString(2, asset.getType());
             ps.setString(3, asset.getSerialNumber());
@@ -52,8 +72,9 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             if(count>0)
             	return true;
             return false;
+            }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -67,6 +88,32 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     @Override
     public boolean updateAsset(Asset asset) throws AssetNotFoundException,EmployeeNotFoundException{
         try (Connection conn = DBUtil.getDBConnection()) {
+        	
+        	String assetCheckQuery = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
+        	
+        	try (PreparedStatement assetStmt = conn.prepareStatement(assetCheckQuery)){
+            
+            assetStmt.setInt(1, asset.getAssetId());
+            ResultSet assetRs = assetStmt.executeQuery();
+
+            if (assetRs.next() && assetRs.getInt(1) == 0) {
+                throw new AssetNotFoundException("Asset with ID " + asset.getAssetId() + " not found.");
+            }
+        	}
+
+            
+            String empCheckQuery = "SELECT COUNT(*) FROM employees WHERE employee_id = ?";
+            
+            try (PreparedStatement empStmt = conn.prepareStatement(empCheckQuery)){
+            
+            empStmt.setInt(1, asset.getOwnerId());
+            ResultSet empRs = empStmt.executeQuery();
+
+            if (empRs.next() && empRs.getInt(1) == 0) {
+                throw new EmployeeNotFoundException("Employee with ID " + asset.getOwnerId() + " not found.");
+            }
+            }
+            
             String query = "UPDATE assets SET name = ?, type = ?, serial_number = ?, purchase_date = ?, location = ?, status = ?, owner_id = ? WHERE asset_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, asset.getName());
@@ -85,7 +132,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             	return true;
             return false;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -100,6 +147,16 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     @Override
     public boolean deleteAsset(int assetId) throws AssetNotFoundException  {
         try (Connection conn = DBUtil.getDBConnection()) {
+        	
+        	 String checkQuery = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
+             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+             checkStmt.setInt(1, assetId);
+             ResultSet rs = checkStmt.executeQuery();
+
+             if (rs.next() && rs.getInt(1) == 0) {
+                 throw new AssetNotFoundException("Asset with ID " + assetId + " not found.");
+             }
+        	
             String query = "DELETE FROM assets WHERE asset_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
@@ -111,10 +168,11 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             	return true;
             return false;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            
         }
+        return false;
     }
 
     
@@ -155,6 +213,16 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
                     }
                 } else {
                     throw new AssetNotMaintainException("No maintenance record found for asset ID " + assetId + ".");
+                }
+            }
+            
+            String checkEmployee = "SELECT COUNT(*) FROM employees WHERE employee_id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(checkEmployee)) {
+                ps.setInt(1, employeeId);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+                    throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
                 }
             }
 
@@ -198,6 +266,17 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     @Override
     public boolean deallocateAsset(int assetId, int employeeId, String returnDate) throws AssetNotFoundException {
         try (Connection conn = DBUtil.getDBConnection()) {
+        	
+        	String checkQuery = "SELECT COUNT(*) FROM asset_allocations WHERE asset_id = ? AND employee_id = ? AND return_date IS NULL";
+            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+            checkStmt.setInt(1, assetId);
+            checkStmt.setInt(2, employeeId);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next() && rs.getInt(1) == 0) {
+                throw new AssetNotFoundException("No active allocation found for asset ID " + assetId + " and employee ID " + employeeId);
+            }
+        	
             String query = "UPDATE asset_allocations SET return_date = ? WHERE asset_id = ? AND employee_id = ? AND return_date IS NULL";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setDate(1, Date.valueOf(returnDate));
@@ -210,7 +289,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             	return true;
             return false;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -232,6 +311,17 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 		
 		try (Connection conn = DBUtil.getDBConnection()){
 			
+			
+			String checkQuery = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
+	        PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+	        checkStmt.setInt(1, assetId);
+	        ResultSet rs = checkStmt.executeQuery();
+
+	        if (rs.next() && rs.getInt(1) == 0) {
+	            throw new AssetNotFoundException("Asset with ID " + assetId + " does not exist.");
+	        }
+
+			
 			String query = "INSERT INTO maintenance_records (asset_id, maintenance_date, description, cost) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, assetId);
@@ -245,7 +335,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             	return true;
             return false;
 			
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			return false;
@@ -269,7 +359,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 
 	    try (Connection conn = DBUtil.getDBConnection()) {
 
-	        // Check if asset exists
+	     
 	        String checkAsset = "SELECT COUNT(*) FROM assets WHERE asset_id = ?";
 	        try (PreparedStatement ps = conn.prepareStatement(checkAsset)) {
 	            ps.setInt(1, assetId);
@@ -280,7 +370,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	            }
 	        }
 
-	        // Check if asset has been maintained in the last 2 years
+	       
 	        String checkMaintenance = "SELECT MAX(maintenance_date) FROM maintenance_records WHERE asset_id = ?";
 	        try (PreparedStatement ps = conn.prepareStatement(checkMaintenance)) {
 	            ps.setInt(1, assetId);
@@ -289,17 +379,27 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 	            if (rs.next()) {
 	                Date lastMaintained = rs.getDate(1);
 
-	                // Check if last maintenance is null or older than 2 years from today's date
+	                
 	                if (lastMaintained == null || lastMaintained.toLocalDate().isBefore(LocalDate.now().minusYears(2))) {
 	                    throw new AssetNotMaintainException("Asset with ID " + assetId + " has not been maintained in the last 2 years.");
 	                }
 	            } else {
-	                // No maintenance record found
+	                
 	                throw new AssetNotMaintainException("No maintenance record found for asset ID " + assetId + ".");
 	            }
 	        }
+	        
+	        
+	        String checkEmployee = "SELECT COUNT(*) FROM employees WHERE employee_id = ?";
+	        try (PreparedStatement ps = conn.prepareStatement(checkEmployee)) {
+	            ps.setInt(1, employeeId);
+	            ResultSet rs = ps.executeQuery();
+	            if (rs.next() && rs.getInt(1) == 0) {
+	                throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
+	            }
+	        }
 
-	        // Insert reservation
+	       
 	        String query = "INSERT INTO reservations (asset_id, employee_id, reservation_date, start_date, end_date) VALUES (?, ?, ?, ?, ?)";
 	        try (PreparedStatement ps = conn.prepareStatement(query)) {
 	            ps.setInt(1, assetId);
@@ -357,7 +457,7 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
             if(count>0)
             	return true;
             return false;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			return false;

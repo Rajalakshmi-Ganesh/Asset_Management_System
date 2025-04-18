@@ -7,6 +7,8 @@ import java.sql.Date;
 import org.junit.jupiter.api.Test;
 
 import com.hexaware.assetmanagementsystem.entity.Asset;
+import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
+import com.hexaware.assetmanagementsystem.exception.InvalidStatusException;
 import com.hexaware.assetmanagementsystem.service.AssetManagementServiceImp;
 import com.hexaware.assetmanagementsystem.service.IAssetManagementService;
 
@@ -19,7 +21,7 @@ import com.hexaware.assetmanagementsystem.service.IAssetManagementService;
 class TestAddAsset {
 
 	@Test
-	void testAddAsset() {
+	void testAddAsset() throws EmployeeNotFoundException, InvalidStatusException {
 		IAssetManagementService addAsset = new AssetManagementServiceImp();
 		
 		Asset asset = new Asset(18, "Laptop", "Dell", "DL1234",Date.valueOf("2025-05-23"),"IT" ,"in use",1);

@@ -7,6 +7,7 @@ import java.sql.Date;
 import org.junit.jupiter.api.Test;
 
 import com.hexaware.assetmanagementsystem.entity.MaintenanceRecord;
+import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.service.AssetManagementServiceImp;
 import com.hexaware.assetmanagementsystem.service.IAssetManagementService;
 
@@ -19,7 +20,7 @@ import com.hexaware.assetmanagementsystem.service.IAssetManagementService;
 class TestPerformanceMaintenance {
 
 	@Test
-	void testPerformMaintenance() {
+	void testPerformMaintenance() throws AssetNotFoundException {
 		
 		
 		IAssetManagementService maintenanceService = new AssetManagementServiceImp();

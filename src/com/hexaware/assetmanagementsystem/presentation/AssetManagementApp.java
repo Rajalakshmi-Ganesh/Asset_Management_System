@@ -8,6 +8,7 @@ import com.hexaware.assetmanagementsystem.entity.*;
 import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.AssetNotMaintainException;
 import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
+import com.hexaware.assetmanagementsystem.exception.InvalidStatusException;
 import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
 public class AssetManagementApp {
@@ -38,7 +39,9 @@ public class AssetManagementApp {
             switch (choice) {
             
             case 1:
+            	
             	try {
+            		
                 System.out.print("Enter Name: ");
                 String name = sc.nextLine();
 
@@ -64,10 +67,12 @@ public class AssetManagementApp {
                 Asset asset = new Asset(0, name, type, serialNumber, purchaseDate, location, status, ownerId);
                 boolean isAdded = service.addAsset(asset);
                 System.out.println(isAdded ? "Asset added successfully!" : "Failed to add asset.");
-            	}
-            	catch(EmployeeNotFoundException |InvalidStatusException e ) {
+                
+            	}catch (EmployeeNotFoundException | InvalidStatusException e) {
+					// TODO: handle exception
             		System.out.println("Error: " + e.getMessage());
-            	}
+				}
+            
                 break;
                 
             case 2:
@@ -206,7 +211,7 @@ public class AssetManagementApp {
                     boolean result7 = service.reserveAsset(assetId2, empId2, resDate, startDate, endDate);
                     System.out.println(result7 ? "Reservation successful!" : "Failed to reserve asset.");
                     
-                } catch (AssetNotFoundException | AssetNotMaintainException e) {
+                } catch (AssetNotFoundException | AssetNotMaintainException | EmployeeNotFoundException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
                 break;
@@ -223,7 +228,7 @@ public class AssetManagementApp {
 					
 				} catch (ReservationNotFoundException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Error: " + e.getMessage());
 				}
                 
                 break;

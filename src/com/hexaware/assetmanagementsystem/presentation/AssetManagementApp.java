@@ -1,11 +1,13 @@
 package com.hexaware.assetmanagementsystem.presentation;
 
 import java.util.*;
+
 import java.sql.Date;
 import com.hexaware.assetmanagementsystem.service.*;
 import com.hexaware.assetmanagementsystem.entity.*;
 import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.AssetNotMaintainException;
+import com.hexaware.assetmanagementsystem.exception.EmployeeNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.ReservationNotFoundException;
 
 public class AssetManagementApp {
@@ -36,7 +38,7 @@ public class AssetManagementApp {
             switch (choice) {
             
             case 1:
-            	
+            	try {
                 System.out.print("Enter Name: ");
                 String name = sc.nextLine();
 
@@ -62,11 +64,14 @@ public class AssetManagementApp {
                 Asset asset = new Asset(0, name, type, serialNumber, purchaseDate, location, status, ownerId);
                 boolean isAdded = service.addAsset(asset);
                 System.out.println(isAdded ? "Asset added successfully!" : "Failed to add asset.");
-                
+            	}
+            	catch(EmployeeNotFoundException |InvalidStatusException e ) {
+            		System.out.println("Error: " + e.getMessage());
+            	}
                 break;
                 
             case 2:
-            	
+            	try {
                 System.out.print("Enter Asset ID to update: ");
                 int updateId = sc.nextInt();
                 sc.nextLine();
@@ -96,17 +101,23 @@ public class AssetManagementApp {
                 Asset updatedAsset = new Asset(updateId, upName, upType, upSerial, upPurchase, upLocation, upStatus, upOwnerId);
                 boolean isUpdated = service.updateAsset(updatedAsset);
                 System.out.println(isUpdated ? "Asset updated!" : "Failed to update asset.");
-                
+            	}
+            	catch(AssetNotFoundException | EmployeeNotFoundException e) {
+            		System.out.println("Error: " + e.getMessage());
+            	}
                 break;
                 
             case 3:
-            	
+            	try {
                 System.out.print("Enter Asset ID to delete: ");
                 int deleteId = sc.nextInt();
                 
                 boolean isDeleted = service.deleteAsset(deleteId);
                 System.out.println(isDeleted ? "Asset deleted!" : "Asset deletion failed.");
-                
+            	}
+            	catch(AssetNotFoundException e) {
+            		System.out.println("Error: " + e.getMessage());
+            	}
                 break;
                 
             case 4:
@@ -125,13 +136,13 @@ public class AssetManagementApp {
                     boolean result4 = service.allocateAsset(aId, eId, allocDateStr);
                     System.out.println(result4 ? "Asset allocated!" : "Allocation failed.");
 
-                } catch (AssetNotFoundException | AssetNotMaintainException e) {
+                } catch (AssetNotFoundException | AssetNotMaintainException | EmployeeNotFoundException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
                 break;
 
             case 5:
-            	
+            	try {
                 System.out.print("Enter Asset ID: ");
                 int daId = sc.nextInt();
 
@@ -144,11 +155,14 @@ public class AssetManagementApp {
 
                 boolean result5 = service.deallocateAsset(daId, empId1, retDateStr);
                 System.out.println(result5 ? "Asset deallocated!" : "Deallocation failed.");
-                
+            	}
+            	catch(AssetNotFoundException e) {
+            		System.out.println("Error: " + e.getMessage());
+            	}
                 break;
                 
             case 6:
-            	
+            	try {
                 System.out.print("Enter Asset ID: ");
                 int assetId1 = sc.nextInt();
                 sc.nextLine(); 
@@ -164,7 +178,10 @@ public class AssetManagementApp {
 
                 boolean result6 = service.performMaintenance(assetId1, date, desc, cost);
                 System.out.println(result6 ? "Maintenance recorded." : "Failed to record maintenance.");
-                
+            	}
+            	catch(AssetNotFoundException e) {
+            		System.out.println("Error: " + e.getMessage());
+            	}
                 break;
 
             case 7:

@@ -10,6 +10,12 @@ import com.hexaware.assetmanagementsystem.entity.Asset;
 import com.hexaware.assetmanagementsystem.service.AssetManagementServiceImp;
 import com.hexaware.assetmanagementsystem.service.IAssetManagementService;
 
+/**
+ * @author Shrinidhii Muthukumaran
+ * desc: Testing for asset insertion
+ * Date: 18-04-2025
+ */
+
 class TestAddAsset {
 
 	@Test

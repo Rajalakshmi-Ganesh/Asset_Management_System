@@ -168,8 +168,9 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            
         }
+        return false;
     }
 
 

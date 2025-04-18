@@ -18,8 +18,18 @@ import com.hexaware.assetmanagementsystem.entity.Asset;
 import com.hexaware.assetmanagementsystem.exception.AssetNotFoundException;
 import com.hexaware.assetmanagementsystem.exception.AssetNotMaintainException;
 
+/**
+ *@Author: Rajalakshmi Ganesh
+ *@Author: Shrinidhii Muthukumaran 
+ * Date: 12-04-2025
+*/
 public class AssetManagementDaoImp implements IAssetManagementDao{
 
+	/**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param asset
+	 * @return boolean
+	 */
 	@Override
     public boolean addAsset(Asset asset) {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -46,6 +56,11 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
         }
     }
 
+	/**
+	   * @Author: Shrinidhii Muthukumaran
+	   * @param asset
+	   * @return boolean
+	   */
     @Override
     public boolean updateAsset(Asset asset) {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -73,6 +88,12 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
         }
     }
 
+    
+    /**
+	  * @Author:Shrinidhii Muthukumaran
+	  * @param assetId
+	  * @return boolean
+	  */
     @Override
     public boolean deleteAsset(int assetId) {
         try (Connection conn = DBUtil.getDBConnection()) {
@@ -94,7 +115,13 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     }
 
     
-    
+    /**
+	   * @Author:Shrinidhii Muthukumaran
+	   * @param assetId
+	   * @param employeeId
+	   * @param allocationDate
+	   * @return boolean
+	   */
     @Override
     public boolean allocateAsset(int assetId, int employeeId, String allocationDate)
         throws AssetNotFoundException, AssetNotMaintainException {
@@ -146,6 +173,13 @@ public class AssetManagementDaoImp implements IAssetManagementDao{
     }
 
 
+    /**
+	 * @Author: Shrinidhii Muthukumaran
+	 * @param assetId
+	 * @param employeeId
+	 * @param returnDate
+	 * @return boolean
+	 */
     @Override
     public boolean deallocateAsset(int assetId, int employeeId, String returnDate) {
         try (Connection conn = DBUtil.getDBConnection()) {

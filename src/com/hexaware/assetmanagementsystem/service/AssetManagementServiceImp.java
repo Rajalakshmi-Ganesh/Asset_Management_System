@@ -3,7 +3,12 @@ package com.hexaware.assetmanagementsystem.service;
 import com.hexaware.assetmanagementsystem.dao.*;
 import com.hexaware.assetmanagementsystem.entity.Asset;
 import com.hexaware.assetmanagementsystem.exception.*;
-
+/**
+ *@Author: Rajalakshmi Ganesh
+ *@Author: Shrinidhii Muthukumaran 
+ *Desc:Asset Management system Service implementation
+ * Date: 12-04-2025
+*/
 public class AssetManagementServiceImp implements IAssetManagementService {
 
 	AssetManagementDaoImp dao = new AssetManagementDaoImp();
